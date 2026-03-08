@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react"
 
 function MenuRutas({ rutaSeleccionada, setRutaSeleccionada }) {
-
   const [rutas, setRutas] = useState([])
 
   useEffect(() => {
     fetch("http://localhost:8000/rutas")
       .then(res => res.json())
       .then(data => setRutas(data))
+      .catch(err => console.error(err))
   }, [])
 
   return (
