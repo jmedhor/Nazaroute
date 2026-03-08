@@ -1,10 +1,9 @@
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { useEffect, useState } from 'react'
 import 'leaflet/dist/leaflet.css'
-
 import PopupRuta from './Popup'
 
-function Mapa() {
+function Mapa({ rutaSeleccionada }) {
 
   const [rutas, setRutas] = useState([])
 
@@ -26,20 +25,18 @@ function Mapa() {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {rutas.map(ruta =>
-        ruta.puntos.map(punto => (
+      {rutaSeleccionada &&
+        rutaSeleccionada.puntos.map(punto => (
           <Marker
-            key={ruta.id + "-" + punto.id}
+            key={punto.id}
             position={[punto.latitud, punto.longitud]}
           >
-
             <Popup>
-              <PopupRuta punto={punto} ruta={ruta} />
+              <PopupRuta punto={punto} ruta={rutaSeleccionada} />
             </Popup>
-
           </Marker>
         ))
-      )}
+      }
 
     </MapContainer>
   )
