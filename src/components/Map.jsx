@@ -1,19 +1,42 @@
-import { MapContainer, TileLayer, Marker, Polyline, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { useEffect, useState } from 'react'
+import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import PopupRuta from './Popup'
+import gpsRed from '../assets/gps_red.png'
+import gpsBlue from '../assets/gps_blue.png'
+import gpsOrange from '../assets/gps_orange.png'
+import gpsGreen from '../assets/gps_green.png'
+import gpsPink from '../assets/gps_pink.png'
+import gpsBlack from '../assets/gps_black.png'
+import gpsPurple from '../assets/gps_purple.png'
+
+// Iconos por ruta
+const iconosRutas = {
+  1: new L.Icon({ iconUrl: gpsRed, iconSize: [40, 40], iconAnchor: [20, 40], popupAnchor: [0, -40] }),
+  2: new L.Icon({ iconUrl: gpsBlue, iconSize: [40, 40], iconAnchor: [20, 40], popupAnchor: [0, -40] }),
+  3: new L.Icon({ iconUrl: gpsOrange, iconSize: [40, 40], iconAnchor: [20, 40], popupAnchor: [0, -40] }),
+  4: new L.Icon({ iconUrl: gpsGreen, iconSize: [40, 40], iconAnchor: [20, 40], popupAnchor: [0, -40] }),
+  5: new L.Icon({ iconUrl: gpsPink, iconSize: [40, 40], iconAnchor: [20, 40], popupAnchor: [0, -40] }),
+  6: new L.Icon({ iconUrl: gpsBlack, iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30] }),
+  7: new L.Icon({ iconUrl: gpsPurple, iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30] }),
+}
 
 function Mapa({ rutaSeleccionada }) {
-  const [puntos, setPuntos] = useState([])
+  const [todosPuntos, setTodosPuntos] = useState([])
 
+  // Cargamos todos los puntos de todas las rutas
   useEffect(() => {
-    if (!rutaSeleccionada) return;
-
-    fetch(`http://localhost:8000/rutas/${rutaSeleccionada.id}/puntos`)
+    fetch("http://localhost:8000/puntos")
       .then(res => res.json())
-      .then(data => setPuntos(data))
+      .then(data => setTodosPuntos(data))
       .catch(err => console.error(err))
-  }, [rutaSeleccionada])
+  }, [])
+
+  // Filtramos según rutaSeleccionada
+  const puntos = rutaSeleccionada
+    ? todosPuntos.filter(p => p.ruta_id === rutaSeleccionada.id)
+    : todosPuntos
 
   return (
     <MapContainer
@@ -21,7 +44,6 @@ function Mapa({ rutaSeleccionada }) {
       zoom={15}
       style={{ height: "80vh", width: "80vw" }}
     >
-
       <TileLayer
         attribution='© OpenStreetMap contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -31,14 +53,13 @@ function Mapa({ rutaSeleccionada }) {
         <Marker
           key={punto.id}
           position={[punto.latitud, punto.longitud]}
+          icon={iconosRutas[punto.ruta_id] || iconosRutas[1]}
         >
           <Popup>
-            <PopupRuta punto={punto} ruta={rutaSeleccionada} />
+            <PopupRuta punto={punto} ruta={{ nombre: punto.ruta_nombre }} />
           </Popup>
         </Marker>
       ))}
-
-
     </MapContainer>
   )
 }

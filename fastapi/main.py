@@ -257,3 +257,20 @@ def añadir_punto(ruta_id: int, punto: PuntoDeInteres):
                 ruta.puntos_ids.append(punto.id)
             return punto
     raise HTTPException(status_code=404, detail="Ruta no encontrada")
+
+@app.get("/puntos")
+def obtener_todos_puntos():
+    """
+    Devuelve todos los puntos de interés con su ruta_id y ruta_nombre.
+    Útil para mostrar todos los puntos en el mapa.
+    """
+    puntos_completos = []
+    for ruta in rutas_db:
+        for p_id in ruta.puntos_ids:
+            punto = puntos_db[p_id]
+            # Añadimos info de la ruta
+            punto_dict = punto.dict()
+            punto_dict["ruta_id"] = ruta.id
+            punto_dict["ruta_nombre"] = ruta.nombre
+            puntos_completos.append(punto_dict)
+    return puntos_completos
