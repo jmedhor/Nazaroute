@@ -4,14 +4,13 @@ import Mapa from './components/Map.jsx'
 import MenuRutas from './components/MenuRutas.jsx'
 
 function App() {
-
   const [rutaSeleccionada, setRutaSeleccionada] = useState(null)
 
   return (
     <div className="App">
 
       <header className="App-header">
-        <h1>NazaRoute</h1>
+        <h1>Rutas Históricas de Granada</h1>
       </header>
 
       <div className="contenedor-principal">
