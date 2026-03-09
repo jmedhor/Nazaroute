@@ -34,9 +34,15 @@ function Mapa({ rutaSeleccionada }) {
   }, [])
 
   // Filtramos según rutaSeleccionada
-  const puntos = rutaSeleccionada
-    ? todosPuntos.filter(p => p.ruta_id === rutaSeleccionada.id)
-    : todosPuntos
+  let puntos = []
+
+  if (rutaSeleccionada) {
+    // Solo los puntos de la ruta seleccionada
+    puntos = todosPuntos.filter(p => p.ruta_id === rutaSeleccionada.id)
+  } else {
+    // Mostrar todos los puntos
+    puntos = todosPuntos
+  }
 
   return (
     <MapContainer
@@ -49,17 +55,17 @@ function Mapa({ rutaSeleccionada }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {puntos.map(punto => (
-        <Marker
-          key={punto.id}
-          position={[punto.latitud, punto.longitud]}
-          icon={iconosRutas[punto.ruta_id] || iconosRutas[1]}
-        >
-          <Popup>
-            <PopupRuta punto={punto} ruta={{ nombre: punto.ruta_nombre }} />
-          </Popup>
-        </Marker>
-      ))}
+    {puntos.map(punto => (
+      <Marker
+        key={`${punto.id}-${punto.ruta_id}`}
+        position={[punto.latitud, punto.longitud]}
+        icon={iconosRutas[punto.ruta_id] || iconosRutas[1]}
+      >
+        <Popup>
+          <PopupRuta punto={punto} ruta={{ nombre: punto.ruta_nombre }} />
+        </Popup>
+      </Marker>
+    ))}
     </MapContainer>
   )
 }

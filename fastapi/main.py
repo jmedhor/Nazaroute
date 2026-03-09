@@ -38,6 +38,8 @@ class Ruta(BaseModel):
 
 # Diccionario de puntos únicos
 puntos_db = {
+
+    #islamica
     1: PuntoDeInteres(id=1, nombre="Muralla zirí", descripcion="", latitud=37.182196, longitud=-3.594874),
     2: PuntoDeInteres(id=2, nombre="Puerta de Elvira", descripcion="", latitud=37.182125, longitud=-3.599586),
     3: PuntoDeInteres(id=3, nombre="Puerta de las Pesas", descripcion="", latitud=37.182512, longitud=-3.593787),
@@ -72,6 +74,7 @@ puntos_db = {
 
     # separacion
 
+    #imperial
     32: PuntoDeInteres(id=32, nombre="Monasterio de San Jerónimo", descripcion="", latitud=37.17948576559224, longitud=-3.6035622285515676),
     33: PuntoDeInteres(id=33, nombre="Convento de Santa Isabel la Real", descripcion="", latitud=37.181112, longitud=-3.596089),
     34: PuntoDeInteres(id=34, nombre="Hospital Real de Granada", descripcion="", latitud=37.184937, longitud=-3.601050),
@@ -93,6 +96,7 @@ puntos_db = {
 
     # separacion
 
+    #barroca
     50: PuntoDeInteres(id=50, nombre="Abadía del Sacromonte", descripcion="", latitud=37.183179, longitud=-3.577104),
     51: PuntoDeInteres(id=51, nombre="Monasterio de la Cartuja", descripcion="", latitud=37.192004, longitud=-3.599302),
     52: PuntoDeInteres(id=52, nombre="Iglesia del Sagrario", descripcion="", latitud=37.175921, longitud=-3.599036),
@@ -106,6 +110,7 @@ puntos_db = {
 
     # separacion
 
+    #mudejar
     60: PuntoDeInteres(id=60, nombre="Iglesia de San José", descripcion="", latitud=37.178646, longitud=-3.596156),
     61: PuntoDeInteres(id=61, nombre="Iglesia de San Gil y Santa Ana", descripcion="", latitud=37.177526, longitud=-3.594460),
     62: PuntoDeInteres(id=62, nombre="Iglesia de San Cristóbal", descripcion="", latitud=37.183585, longitud=-3.596459),
@@ -117,6 +122,7 @@ puntos_db = {
 
     # separacion
 
+    #xix
     68: PuntoDeInteres(id=68, nombre="Cementerio de San José", descripcion="", latitud=37.16976, longitud=-3.57841),
     69: PuntoDeInteres(id=69, nombre="Silla del Moro", descripcion="", latitud=37.178364, longitud=-3.583844),
     70: PuntoDeInteres(id=70, nombre="Calle Reyes Católicos", descripcion="", latitud=37.175390302152024, longitud=-3.5981201969560614),
@@ -129,7 +135,7 @@ puntos_db = {
 
     # separacion
 
-
+    #xx
     77: PuntoDeInteres(id=77, nombre="Gran Vía de Colón", descripcion="", latitud=37.182905, longitud=-3.601995),
     78: PuntoDeInteres(id=78, nombre="Gobierno Civil de Granada", descripcion="", latitud=37.178194265424885, longitud=-3.602791870015424),
     79: PuntoDeInteres(id=79, nombre="Puerta Real", descripcion="", latitud=37.173561725394485, longitud=-3.599572643063466),
@@ -144,6 +150,7 @@ puntos_db = {
 
     # separacion
 
+    #lorquiana
     88: PuntoDeInteres(id=88, nombre="Casa Natal de Federico García Lorca (Fuente Vaqueros)", descripcion="", latitud=37.23167511184424, longitud=-3.745574166464271),
     89: PuntoDeInteres(id=89, nombre="Casa Museo Federico García Lorca (Valderrubio)", descripcion="", latitud=37.232614794741515, longitud=-3.816052205270329),
     90: PuntoDeInteres(id=90, nombre="Casa de Federico García Lorca (Acera del Darro)", descripcion="", latitud=37.171147858880914, longitud=-3.598585448543979),
@@ -194,7 +201,7 @@ rutas_db = [
         id=4,
         nombre="Granada Mudéjar",
         descripcion="Edificios cristianos con influencia islámica.",
-        puntos_ids=list(range(50, 67)) + [40, 28, 47, 67]  # puntos del 50 al 66, 40,28,47 y 67
+        puntos_ids=list(range(60, 67)) + [40, 28, 47, 67]  # puntos del 60 al 66, 40,28,47 y 67
     ),
     Ruta(
         id=5,
@@ -257,6 +264,7 @@ def añadir_punto(ruta_id: int, punto: PuntoDeInteres):
                 ruta.puntos_ids.append(punto.id)
             return punto
     raise HTTPException(status_code=404, detail="Ruta no encontrada")
+
 
 @app.get("/puntos")
 def obtener_todos_puntos():

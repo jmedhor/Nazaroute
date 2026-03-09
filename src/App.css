@@ -116,3 +116,82 @@ body{
   background:#bbb;
   border-radius:10px;
 }
+
+
+/* ---------- MENU PUNTOS ---------- */
+
+.menu-puntos{
+  width:240px;
+  height:100%;
+  background:white;
+  border-radius:10px;
+  padding:15px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.15);
+  overflow-y:auto;
+}
+
+/* titulo ruta */
+
+.menu-puntos h3{
+  margin-top:0;
+  margin-bottom:12px;
+  font-size:18px;
+  color:#7b1e1e;
+  border-bottom:2px solid #eee;
+  padding-bottom:6px;
+}
+
+/* boton volver */
+
+.menu-puntos button{
+  width:100%;
+  padding:8px;
+  margin-bottom:10px;
+  border:none;
+  border-radius:6px;
+  background:#7b1e1e;
+  color:white;
+  font-size:14px;
+  cursor:pointer;
+  transition:all 0.2s ease;
+}
+
+.menu-puntos button:hover{
+  background:#a83232;
+}
+
+/* ---------- LISTA PUNTOS ---------- */
+
+.menu-puntos ul{
+  list-style:none;
+  padding:0;
+  margin:0;
+}
+
+.menu-puntos li{
+  padding:10px;
+  margin-bottom:6px;
+  cursor:pointer;
+  border-radius:6px;
+  transition:all 0.2s ease;
+  font-size:14px;
+  background:#e7dfcf;
+  color:#2c2c2c;
+  font-weight:500;
+}
+
+.menu-puntos li:hover{
+  background:#d8c9a6;
+  transform:translateX(3px);
+}
+
+/* ---------- SCROLL ---------- */
+
+.menu-puntos::-webkit-scrollbar{
+  width:6px;
+}
+
+.menu-puntos::-webkit-scrollbar-thumb{
+  background:#bbb;
+  border-radius:10px;
+}
