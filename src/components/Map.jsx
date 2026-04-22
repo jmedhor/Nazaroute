@@ -22,10 +22,9 @@ const iconosRutas = {
   7: new L.Icon({ iconUrl: gpsPurple, iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30] }),
 }
 
-function Mapa({ rutaSeleccionada }) {
+function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador }) {
   const [todosPuntos, setTodosPuntos] = useState([])
 
-  // Cargamos todos los puntos de todas las rutas
   useEffect(() => {
     fetch("http://localhost:8000/puntos")
       .then(res => res.json())
@@ -33,39 +32,40 @@ function Mapa({ rutaSeleccionada }) {
       .catch(err => console.error(err))
   }, [])
 
-  // Filtramos según rutaSeleccionada
-  let puntos = []
-
-  if (rutaSeleccionada) {
-    // Solo los puntos de la ruta seleccionada
-    puntos = todosPuntos.filter(p => p.ruta_id === rutaSeleccionada.id)
-  } else {
-    // Mostrar todos los puntos
-    puntos = todosPuntos
-  }
+  let puntos = rutaSeleccionada
+    ? todosPuntos.filter(p => p.ruta_id === rutaSeleccionada.id)
+    : todosPuntos
 
   return (
     <MapContainer
       center={[37.1773, -3.5986]}
       zoom={15}
       style={{ height: "80vh", width: "80vw" }}
+      whenCreated={(mapInstance) => {
+        mapRef.current = mapInstance
+      }}
     >
       <TileLayer
         attribution='© OpenStreetMap contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-    {puntos.map(punto => (
-      <Marker
-        key={`${punto.id}-${punto.ruta_id}`}
-        position={[punto.latitud, punto.longitud]}
-        icon={iconosRutas[punto.ruta_id] || iconosRutas[1]}
-      >
-        <Popup>
-          <PopupRuta punto={punto} ruta={{ nombre: punto.ruta_nombre }} />
-        </Popup>
-      </Marker>
-    ))}
+      {puntos.map(punto => (
+        <Marker
+          key={`${punto.id}-${punto.ruta_id}`}
+          position={[punto.latitud, punto.longitud]}
+          icon={iconosRutas[punto.ruta_id] || iconosRutas[1]}
+        >
+          <Popup>
+            <PopupRuta
+              punto={punto}
+              ruta={{ nombre: punto.ruta_nombre }}
+              modoHistoriador={modoHistoriador}
+              setModoHistoriador={setModoHistoriador}
+            />
+          </Popup>
+        </Marker>
+      ))}
     </MapContainer>
   )
 }

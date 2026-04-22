@@ -7,24 +7,31 @@ import MenuPuntos from './components/MenuPuntos.jsx'
 function App() {
   const [rutaSeleccionada, setRutaSeleccionada] = useState(null)
   const mapRef = useRef()
+  const [modoHistoriador, setModoHistoriador] = useState(false)
+
 
   // función para centrar en un punto desde MenuPuntos
   const centrarEnPunto = (punto) => {
-    const map = mapRef.current
-    if (map) map.setView([punto.latitud, punto.longitud], 18)
+    console.log("helloo")
+    if (mapRef.current) {
+      console.log("h2")
+      mapRef.current.setView([punto.latitud, punto.longitud], 1)
+    }
   }
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Rutas Históricas de Granada</h1>
-      </header>
+    <header className="App-header">
+      <h1>NazaRoute</h1>
+    </header>
 
       <div className="contenedor-principal">
         <div className="map-container">
           <Mapa
             rutaSeleccionada={rutaSeleccionada}
             mapRef={mapRef}
+            modoHistoriador={modoHistoriador}
+            setModoHistoriador={setModoHistoriador}
           />
         </div>
 

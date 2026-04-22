@@ -195,3 +195,23 @@ body{
   background:#bbb;
   border-radius:10px;
 }
+
+/* ----------- POPUP TOGGLE ---------- */
+
+.popup-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-top: 8px;
+  border-top: 1px solid #eee;
+  padding-top: 6px;
+  color: #7b1e1e;
+  font-weight: 600;
+}
+
+.popup-toggle input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: #7b1e1e;
+}
