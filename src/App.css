@@ -17,8 +17,8 @@ body{
 .App-header{
   background:linear-gradient(90deg,#7b1e1e,#a83232);
   color:white;
-  padding:12px;          /* antes 20 */
-  font-size:22px;        /* antes 28 */
+  padding:9px;          /* antes 20 */
+  font-size:15px;        /* antes 28 */
   font-weight:bold;
   letter-spacing:1px;
   box-shadow:0px 3px 10px rgba(0,0,0,0.2);
@@ -215,3 +215,11 @@ body{
   cursor: pointer;
   accent-color: #7b1e1e;
 }
+
+/* --------------- SELECTOR RUTA --------- */
+
+.selector-ruta{
+  font-size:15px;
+}
+
+

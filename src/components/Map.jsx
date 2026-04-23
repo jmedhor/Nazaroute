@@ -1,5 +1,6 @@
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents } from 'react-leaflet'
 import { useEffect, useState } from 'react'
+import { obtenerRutaHistorica, obtenerRutaOptima } from '../../services/osrm.js'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import PopupRuta from './Popup'
@@ -10,6 +11,7 @@ import gpsGreen from '../assets/gps_green.png'
 import gpsPink from '../assets/gps_pink.png'
 import gpsBlack from '../assets/gps_black.png'
 import gpsPurple from '../assets/gps_purple.png'
+
 
 // Iconos por ruta
 const iconosRutas = {
@@ -22,8 +24,29 @@ const iconosRutas = {
   7: new L.Icon({ iconUrl: gpsPurple, iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30] }),
 }
 
-function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador }) {
+
+
+function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, modoRuta }) {
   const [todosPuntos, setTodosPuntos] = useState([])
+  const [rutaLinea, setRutaLinea] = useState(null)
+  const [userLocation, setUserLocation] = useState({
+    lat: 37.1773,
+    lon: -3.5986
+  })
+
+  function MapaClickHandler() {
+    useMapEvents({
+      click(e) {
+        console.log("testing")
+        setUserLocation({
+          lat: e.latlng.lat,
+          lon: e.latlng.lng
+        })
+      }
+    })
+
+    return null
+  }
 
   useEffect(() => {
     fetch("http://localhost:8000/puntos")
@@ -36,6 +59,24 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador })
     ? todosPuntos.filter(p => p.ruta_id === rutaSeleccionada.id)
     : todosPuntos
 
+  useEffect(() => {
+    const cargarRuta = async () => {
+      if (!rutaSeleccionada || puntos.length === 0) return
+
+      let coords
+
+      if (modoRuta === "historica") {
+        coords = await obtenerRutaHistorica(puntos, userLocation)
+      } else {
+        coords = await obtenerRutaOptima(puntos, userLocation)
+      }
+
+      setRutaLinea(coords)
+    }
+
+    cargarRuta()
+  }, [rutaSeleccionada, todosPuntos, modoRuta, userLocation])
+
   return (
     <MapContainer
       center={[37.1773, -3.5986]}
@@ -45,10 +86,24 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador })
         mapRef.current = mapInstance
       }}
     >
+    <MapaClickHandler />
+
       <TileLayer
         attribution='© OpenStreetMap contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+
+      {rutaLinea && (
+        <Polyline
+          positions={rutaLinea.map(([lon, lat]) => [lat, lon])}
+          color={modoHistoriador ? "purple" : "red"}
+          weight={4}
+        />
+      )}
+
+      <Marker position={[userLocation.lat, userLocation.lon]}>
+        <Popup>📍 Inicio (usuario)</Popup>
+      </Marker>
 
       {puntos.map(punto => (
         <Marker
@@ -66,6 +121,8 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador })
           </Popup>
         </Marker>
       ))}
+
+
     </MapContainer>
   )
 }

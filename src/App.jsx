@@ -8,13 +8,11 @@ function App() {
   const [rutaSeleccionada, setRutaSeleccionada] = useState(null)
   const mapRef = useRef()
   const [modoHistoriador, setModoHistoriador] = useState(false)
-
+  const [modoRuta, setModoRuta] = useState("optima")
 
   // función para centrar en un punto desde MenuPuntos
   const centrarEnPunto = (punto) => {
-    console.log("helloo")
     if (mapRef.current) {
-      console.log("h2")
       mapRef.current.setView([punto.latitud, punto.longitud], 1)
     }
   }
@@ -23,7 +21,36 @@ function App() {
     <div className="App">
     <header className="App-header">
       <h1>NazaRoute</h1>
+
+      <div className="selector-ruta">
+        <h3>Tipo de ruta</h3>
+
+        <label>
+          <input
+            type="radio"
+            name="ruta"
+            value="optima"
+            checked={modoRuta === "optima"}
+            onChange={() => setModoRuta("optima")}
+          />
+          🟢 Óptima (recomendada)
+        </label>
+
+        <label>
+          <input
+            type="radio"
+            name="ruta"
+            value="historica"
+            checked={modoRuta === "historica"}
+            onChange={() => setModoRuta("historica")}
+          />
+          🟥 Histórica (orden fijo)
+        </label>
+      </div>
+
     </header>
+
+
 
       <div className="contenedor-principal">
         <div className="map-container">
@@ -32,6 +59,7 @@ function App() {
             mapRef={mapRef}
             modoHistoriador={modoHistoriador}
             setModoHistoriador={setModoHistoriador}
+            modoRuta={modoRuta}
           />
         </div>
 
