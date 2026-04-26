@@ -24,6 +24,8 @@ const iconosRutas = {
   7: new L.Icon({ iconUrl: gpsPurple, iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30] }),
 }
 
+const colores = ["red", "blue", "green", "orange", "purple", "black"]
+
 
 
 function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, modoRuta }) {
@@ -33,6 +35,7 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
     lat: 37.1773,
     lon: -3.5986
   })
+  const [rutasSegmentos, setRutasSegmentos] = useState([])
 
   function MapaClickHandler() {
     useMapEvents({
@@ -55,6 +58,12 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
       .catch(err => console.error(err))
   }, [])
 
+  useEffect(() => {
+    if (!rutaSeleccionada) {
+      setRutasSegmentos([])
+    }
+  }, [rutaSeleccionada])
+
   let puntos = rutaSeleccionada
     ? todosPuntos.filter(p => p.ruta_id === rutaSeleccionada.id)
     : todosPuntos
@@ -63,15 +72,15 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
     const cargarRuta = async () => {
       if (!rutaSeleccionada || puntos.length === 0) return
 
-      let coords
+      let legs
 
       if (modoRuta === "historica") {
-        coords = await obtenerRutaHistorica(puntos, userLocation)
+        legs = await obtenerRutaHistorica(puntos, userLocation)
       } else {
-        coords = await obtenerRutaOptima(puntos, userLocation)
+        legs = await obtenerRutaOptima(puntos, userLocation)
       }
 
-      setRutaLinea(coords)
+      setRutasSegmentos(legs)
     }
 
     cargarRuta()
@@ -93,13 +102,21 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {rutaLinea && (
+    {rutasSegmentos.map((leg, index) => {
+
+      const coords = leg.steps.flatMap(step =>
+        step.geometry.coordinates
+      )
+
+      return (
         <Polyline
-          positions={rutaLinea.map(([lon, lat]) => [lat, lon])}
-          color={modoHistoriador ? "purple" : "red"}
-          weight={4}
+          key={index}
+          positions={coords.map(([lon, lat]) => [lat, lon])}
+          color={colores[index % colores.length]}
+          weight={5}
         />
-      )}
+      )
+    })}
 
       <Marker position={[userLocation.lat, userLocation.lon]}>
         <Popup>📍 Inicio (usuario)</Popup>

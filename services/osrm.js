@@ -10,12 +10,12 @@ export async function obtenerRutaHistorica(puntos, userLocation) {
     ...puntos.map(p => `${p.longitud},${p.latitud}`)
   ].join(";")
 
-  const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`
+  const url = `${OSRM_BASE}/route/v1/walking/${coords}?overview=false&geometries=geojson&steps=true`
 
   const res = await fetch(url)
   const data = await res.json()
 
-  return data.routes[0].geometry.coordinates
+  return data.routes[0].legs
 }
 
 // La ruta optima parte de la localizacion inicial y calcula la
@@ -28,10 +28,10 @@ export async function obtenerRutaOptima(puntos, userLocation) {
     ...puntos.map(p => `${p.longitud},${p.latitud}`)
   ].join(";")
 
-  const url = `https://router.project-osrm.org/trip/v1/driving/${coords}?overview=full&geometries=geojson&source=first&destination=any`
+  const url = `${OSRM_BASE}/trip/v1/walking/${coords}?overview=false&geometries=geojson&steps=true`
 
   const res = await fetch(url)
   const data = await res.json()
 
-  return data.trips[0].geometry.coordinates
+  return data.trips[0].legs
 }
