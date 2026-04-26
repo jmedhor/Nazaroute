@@ -36,6 +36,8 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
     lon: -3.5986
   })
   const [rutasSegmentos, setRutasSegmentos] = useState([])
+  const [cargandoRuta, setCargandoRuta] = useState(false)
+
 
   function MapaClickHandler() {
     useMapEvents({
@@ -72,20 +74,28 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
     const cargarRuta = async () => {
       if (!rutaSeleccionada || puntos.length === 0) return
 
-      let legs
+      setCargandoRuta(true)   // 🔴 empieza carga
 
-      if (modoRuta === "historica") {
-        legs = await obtenerRutaHistorica(puntos, userLocation)
-      } else {
-        legs = await obtenerRutaOptima(puntos, userLocation)
+      try {
+        let legs
+
+        if (modoRuta === "historica") {
+          legs = await obtenerRutaHistorica(puntos, userLocation)
+        } else {
+          legs = await obtenerRutaOptima(puntos, userLocation)
+        }
+
+        setRutasSegmentos(legs)
+
+      } catch (err) {
+        console.error("Error cargando ruta:", err)
+      } finally {
+        setCargandoRuta(false)  // 🟢 termina carga
       }
-
-      setRutasSegmentos(legs)
     }
 
     cargarRuta()
   }, [rutaSeleccionada, todosPuntos, modoRuta, userLocation])
-
   return (
     <MapContainer
       center={[37.1773, -3.5986]}
@@ -102,21 +112,27 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-    {rutasSegmentos.map((leg, index) => {
+      {cargandoRuta && (
+        <div className="loading-overlay">
+          Cargando ruta...
+        </div>
+      )}
 
-      const coords = leg.steps.flatMap(step =>
-        step.geometry.coordinates
-      )
+      {rutasSegmentos.map((leg, index) => {
 
-      return (
-        <Polyline
-          key={index}
-          positions={coords.map(([lon, lat]) => [lat, lon])}
-          color={colores[index % colores.length]}
-          weight={5}
-        />
-      )
-    })}
+        const coords = leg.steps.flatMap(step =>
+          step.geometry.coordinates
+        )
+
+        return (
+          <Polyline
+            key={index}
+            positions={coords.map(([lon, lat]) => [lat, lon])}
+            color={colores[index % colores.length]}
+            weight={5}
+          />
+        )
+      })}
 
       <Marker position={[userLocation.lat, userLocation.lon]}>
         <Popup>📍 Inicio (usuario)</Popup>
