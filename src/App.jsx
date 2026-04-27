@@ -3,12 +3,14 @@ import './App.css'
 import Mapa from './components/Map.jsx'
 import MenuRutas from './components/MenuRutas.jsx'
 import MenuPuntos from './components/MenuPuntos.jsx'
+import PanelRuta from './components/PanelRuta.jsx'
 
 function App() {
   const [rutaSeleccionada, setRutaSeleccionada] = useState(null)
   const mapRef = useRef()
   const [modoHistoriador, setModoHistoriador] = useState(false)
   const [modoRuta, setModoRuta] = useState("optima")
+  const [rutasSegmentos, setRutasSegmentos] = useState([])
 
   // función para centrar en un punto desde MenuPuntos
   const centrarEnPunto = (punto) => {
@@ -60,8 +62,11 @@ function App() {
             modoHistoriador={modoHistoriador}
             setModoHistoriador={setModoHistoriador}
             modoRuta={modoRuta}
+            setRutasSegmentos={setRutasSegmentos}
           />
         </div>
+
+        <PanelRuta rutasSegmentos={rutasSegmentos} />
 
         {/* Mostrar MenuRutas o MenuPuntos según la selección */}
         {rutaSeleccionada ? (
@@ -75,6 +80,8 @@ function App() {
             rutaSeleccionada={rutaSeleccionada}
             setRutaSeleccionada={setRutaSeleccionada}
           />
+
+
         )}
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents, Tooltip } from 'react-leaflet'
 import { useEffect, useState } from 'react'
 import { obtenerRutaHistorica, obtenerRutaOptima } from '../../services/osrm.js'
 import L from 'leaflet'
@@ -24,18 +24,34 @@ const iconosRutas = {
   7: new L.Icon({ iconUrl: gpsPurple, iconSize: [30, 30], iconAnchor: [15, 30], popupAnchor: [0, -30] }),
 }
 
-const colores = ["red", "blue", "green", "orange", "purple", "black"]
+const colores = [
+  "#e63946",
+  "#f77f00",
+  "#fcbf49",
+  "#90be6d",
+  "#43aa8b",
+  "#577590"
+]
+
+function crearIconoNumero(numero) {
+  return new L.DivIcon({
+    html: `<div class="numero-marker">${numero}</div>`,
+    className: "",
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+  })
+}
 
 
 
-function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, modoRuta }) {
+function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, modoRuta, setRutasSegmentos }) {
   const [todosPuntos, setTodosPuntos] = useState([])
   const [rutaLinea, setRutaLinea] = useState(null)
   const [userLocation, setUserLocation] = useState({
     lat: 37.1773,
     lon: -3.5986
   })
-  const [rutasSegmentos, setRutasSegmentos] = useState([])
+  const [rutasSegmentosLocal, setRutasSegmentosLocal] = useState([])
   const [cargandoRuta, setCargandoRuta] = useState(false)
 
 
@@ -63,6 +79,7 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
   useEffect(() => {
     if (!rutaSeleccionada) {
       setRutasSegmentos([])
+      setRutasSegmentosLocal([])
     }
   }, [rutaSeleccionada])
 
@@ -86,6 +103,7 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
         }
 
         setRutasSegmentos(legs)
+        setRutasSegmentosLocal(legs)
 
       } catch (err) {
         console.error("Error cargando ruta:", err)
@@ -118,8 +136,7 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
         </div>
       )}
 
-      {rutasSegmentos.map((leg, index) => {
-
+      {rutasSegmentosLocal.map((leg, index) => {
         const coords = leg.steps.flatMap(step =>
           step.geometry.coordinates
         )
@@ -129,13 +146,16 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
             key={index}
             positions={coords.map(([lon, lat]) => [lat, lon])}
             color={colores[index % colores.length]}
-            weight={5}
+            weight={6}
+            opacity={0.8}
           />
         )
       })}
 
       <Marker position={[userLocation.lat, userLocation.lon]}>
-        <Popup>📍 Inicio (usuario)</Popup>
+        <Tooltip direction="top" offset={[0, -10]} permanent>
+          📍 Inicio
+        </Tooltip>
       </Marker>
 
       {puntos.map(punto => (
@@ -154,6 +174,32 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
           </Popup>
         </Marker>
       ))}
+
+      {puntos.length > 0 && (
+        <Marker
+          position={[
+            puntos[puntos.length - 1].latitud,
+            puntos[puntos.length - 1].longitud
+          ]}
+        >
+          <Tooltip direction="top" offset={[0, -10]} permanent>
+            🏁 Final
+          </Tooltip>
+        </Marker>
+      )}
+
+      {rutasSegmentosLocal.map((leg, index) => {
+        const lastStep = leg.steps[leg.steps.length - 1]
+        const lastCoord = lastStep.geometry.coordinates.slice(-1)[0]
+
+        return (
+          <Marker
+            key={`orden-${index}`}
+            position={[lastCoord[1], lastCoord[0]]}
+            icon={crearIconoNumero(index + 1)}
+          />
+        )
+      })}
 
 
     </MapContainer>
