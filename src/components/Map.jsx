@@ -55,7 +55,7 @@ function MapController({ setMapRef }) {
 
 
 
-function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, modoRuta, setRutasSegmentos }) {
+function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, modoRuta, setRutasSegmentos, evitarPago }) {
   const [todosPuntos, setTodosPuntos] = useState([])
   const [rutaLinea, setRutaLinea] = useState(null)
   const [userLocation, setUserLocation] = useState({
@@ -119,15 +119,15 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
     const cargarRuta = async () => {
       if (!rutaSeleccionada || puntos.length === 0) return
 
-      setCargandoRuta(true)   // 🔴 empieza carga
+      setCargandoRuta(true)
 
       try {
         let legs
 
         if (modoRuta === "historica") {
-          legs = await obtenerRutaHistorica(puntos, userLocation)
+          legs = await obtenerRutaHistorica(puntos, userLocation, evitarPago)
         } else {
-          legs = await obtenerRutaOptima(puntos, userLocation)
+          legs = await obtenerRutaOptima(puntos, userLocation, evitarPago)
         }
 
         setRutasSegmentos(legs)
@@ -136,12 +136,12 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
       } catch (err) {
         console.error("Error cargando ruta:", err)
       } finally {
-        setCargandoRuta(false)  // 🟢 termina carga
+        setCargandoRuta(false)
       }
     }
 
     cargarRuta()
-  }, [rutaSeleccionada, todosPuntos, modoRuta, userLocation])
+  }, [rutaSeleccionada, todosPuntos, modoRuta, userLocation, evitarPago])
   return (
     <MapContainer
       center={[37.1773, -3.5986]}
@@ -191,7 +191,9 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
         </Tooltip>
       </Marker>
 
-      {puntos.map(punto => (
+      {puntos
+        .filter(punto => !evitarPago || !punto.pago)
+        .map(punto => (
         <Marker
           key={`${punto.id}-${punto.ruta_id}`}
           position={[punto.latitud, punto.longitud]}

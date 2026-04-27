@@ -13,7 +13,7 @@ function App() {
   const [rutasSegmentos, setRutasSegmentos] = useState([])
   const [mostrarPuntos, setMostrarPuntos] = useState(false)
   const [modoNavegacion, setModoNavegacion] = useState(false)
-
+  const [evitarPago, setEvitarPago] = useState(false)
   // función para centrar en un punto desde MenuPuntos
   const centrarEnPunto = (punto) => {
     if (!mapRef.current) return
@@ -49,6 +49,8 @@ function App() {
               Óptima
             </label>
 
+
+
             <label>
               <input
                 type="radio"
@@ -58,6 +60,16 @@ function App() {
               />
               Histórica
             </label>
+
+            <label style={{ display: "block", marginTop: "10px" }}>
+              <input
+                type="checkbox"
+                checked={evitarPago}
+                onChange={(e) => setEvitarPago(e.target.checked)}
+              />
+              {" "}Evitar opciones de pago 💸
+            </label>
+
           </div>
         </div>
       </header>
@@ -74,6 +86,7 @@ function App() {
             setModoHistoriador={setModoHistoriador}
             modoRuta={modoRuta}
             setRutasSegmentos={setRutasSegmentos}
+            evitarPago={evitarPago}
           />
         </div>
 
