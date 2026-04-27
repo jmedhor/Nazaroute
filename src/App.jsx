@@ -11,50 +11,61 @@ function App() {
   const [modoHistoriador, setModoHistoriador] = useState(false)
   const [modoRuta, setModoRuta] = useState("optima")
   const [rutasSegmentos, setRutasSegmentos] = useState([])
+  const [mostrarPuntos, setMostrarPuntos] = useState(false)
+  const [modoNavegacion, setModoNavegacion] = useState(false)
 
   // función para centrar en un punto desde MenuPuntos
   const centrarEnPunto = (punto) => {
-    if (mapRef.current) {
-      mapRef.current.setView([punto.latitud, punto.longitud], 1)
-    }
+    if (!mapRef.current) return
+
+    mapRef.current.flyTo(
+      [punto.latitud, punto.longitud],
+      16,
+      { duration: 1.2 }
+    )
   }
 
   return (
+
+//--------
+
     <div className="App">
-    <header className="App-header">
-      <h1>NazaRoute</h1>
 
-      <div className="selector-ruta">
-        <h3>Tipo de ruta</h3>
+      {/* HEADER */}
+      <header className="app-header">
+        <div className="header-left">
+          <h1>NazaRoute</h1>
+        </div>
 
-        <label>
-          <input
-            type="radio"
-            name="ruta"
-            value="optima"
-            checked={modoRuta === "optima"}
-            onChange={() => setModoRuta("optima")}
-          />
-          🟢 Óptima (recomendada)
-        </label>
+        <div className="header-right">
+          <div className="selector-ruta">
+            <label>
+              <input
+                type="radio"
+                value="optima"
+                checked={modoRuta === "optima"}
+                onChange={() => setModoRuta("optima")}
+              />
+              Óptima
+            </label>
 
-        <label>
-          <input
-            type="radio"
-            name="ruta"
-            value="historica"
-            checked={modoRuta === "historica"}
-            onChange={() => setModoRuta("historica")}
-          />
-          🟥 Histórica (orden fijo)
-        </label>
-      </div>
+            <label>
+              <input
+                type="radio"
+                value="historica"
+                checked={modoRuta === "historica"}
+                onChange={() => setModoRuta("historica")}
+              />
+              Histórica
+            </label>
+          </div>
+        </div>
+      </header>
 
-    </header>
+      {/* MAIN */}
+      <div className="main-layout">
 
-
-
-      <div className="contenedor-principal">
+        {/* MAPA */}
         <div className="map-container">
           <Mapa
             rutaSeleccionada={rutaSeleccionada}
@@ -66,25 +77,72 @@ function App() {
           />
         </div>
 
-        <PanelRuta rutasSegmentos={rutasSegmentos} />
+        {/* PANEL DERECHO ÚNICO */}
+        <div className="panel-derecha">
 
-        {/* Mostrar MenuRutas o MenuPuntos según la selección */}
-        {rutaSeleccionada ? (
-          <MenuPuntos
-            ruta={rutaSeleccionada}
-            setRutaSeleccionada={setRutaSeleccionada}
-            centrarEnPunto={centrarEnPunto}
-          />
-        ) : (
-          <MenuRutas
-            rutaSeleccionada={rutaSeleccionada}
-            setRutaSeleccionada={setRutaSeleccionada}
-          />
+          {/* SIN RUTA */}
+          {!rutaSeleccionada && (
+            <MenuRutas
+              rutaSeleccionada={rutaSeleccionada}
+              setRutaSeleccionada={setRutaSeleccionada}
+            />
+          )}
 
+          {/* CON RUTA */}
+          {rutaSeleccionada && (
+            <>
+              {/* BOTON VOLVER SIEMPRE ARRIBA */}
+              <button
+                className="btn-volver"
+                onClick={() => {
+                  setRutaSeleccionada(null)
+                  setModoNavegacion(false)
+                }}
+              >
+                ← Volver
+              </button>
 
-        )}
+              {/* MODO PUNTOS */}
+              {!modoNavegacion && (
+                <>
+                  <MenuPuntos
+                    ruta={rutaSeleccionada}
+                    centrarEnPunto={centrarEnPunto}
+                    mapRef={mapRef}
+
+                  />
+
+                  <button
+                    className="btn-start"
+                    onClick={() => setModoNavegacion(true)}
+                  >
+                    🚀 Comenzar Ruta
+                  </button>
+                </>
+              )}
+
+              {/* MODO NAVEGACIÓN */}
+              {modoNavegacion && (
+                <>
+                  <PanelRuta rutasSegmentos={rutasSegmentos} />
+
+                  <button
+                    className="btn-puntos"
+                    onClick={() => setModoNavegacion(false)}
+                  >
+                    📍 Volver a lista de puntos
+                  </button>
+                </>
+              )}
+            </>
+          )}
+
+        </div>
+
       </div>
     </div>
+//------------------
+
   )
 }
 

@@ -1,5 +1,5 @@
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents, Tooltip } from 'react-leaflet'
-import { useEffect, useState } from 'react'
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMapEvents, Tooltip, useMap } from 'react-leaflet'
+import { useEffect, useState, useRef } from 'react'
 import { obtenerRutaHistorica, obtenerRutaOptima } from '../../services/osrm.js'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -42,6 +42,17 @@ function crearIconoNumero(numero) {
   })
 }
 
+function MapController({ setMapRef }) {
+  const map = useMap()
+
+  useEffect(() => {
+    setMapRef(map)
+  }, [map])
+
+  return null
+}
+
+
 
 
 function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, modoRuta, setRutasSegmentos }) {
@@ -53,7 +64,24 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
   })
   const [rutasSegmentosLocal, setRutasSegmentosLocal] = useState([])
   const [cargandoRuta, setCargandoRuta] = useState(false)
+  const markersRef = useRef({})
 
+
+
+  const centrarYAbrir = (punto) => {
+    const marker = markersRef.current[punto.id]
+
+    if (mapRef.current) {
+      mapRef.current.flyTo(
+        [punto.latitud, punto.longitud],
+        16
+      )
+    }
+
+    if (marker) {
+      marker.openPopup()
+    }
+  }
 
   function MapaClickHandler() {
     useMapEvents({
@@ -123,6 +151,11 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
         mapRef.current = mapInstance
       }}
     >
+    <MapController setMapRef={(map) => {
+      mapRef.current = map
+      map.centrarYAbrir = centrarYAbrir
+    }} />
+
     <MapaClickHandler />
 
       <TileLayer
@@ -163,6 +196,9 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
           key={`${punto.id}-${punto.ruta_id}`}
           position={[punto.latitud, punto.longitud]}
           icon={iconosRutas[punto.ruta_id] || iconosRutas[1]}
+          ref={(el) => {
+            if (el) markersRef.current[punto.id] = el
+          }}
         >
           <Popup>
             <PopupRuta
@@ -175,17 +211,6 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
         </Marker>
       ))}
 
-      {puntos.length > 0 && (
-        <Marker
-          position={[
-            puntos[puntos.length - 1].latitud,
-            puntos[puntos.length - 1].longitud
-          ]}
-        >
-          <Tooltip direction="top" offset={[0, -10]} permanent>
-            🏁 Final
-          </Tooltip>
-        </Marker>
       )}
 
       {rutasSegmentosLocal.map((leg, index) => {

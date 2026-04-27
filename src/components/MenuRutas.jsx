@@ -13,7 +13,7 @@ function MenuRutas({ rutaSeleccionada, setRutaSeleccionada }) {
   return (
     <div className="menu-rutas">
 
-      <h2>Rutas</h2>
+      <h2>Rutas disponibles</h2>
 
       <ul>
         {rutas.map(ruta => (

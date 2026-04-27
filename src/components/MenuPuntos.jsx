@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-function MenuPuntos({ ruta, setRutaSeleccionada, centrarEnPunto }) {
+function MenuPuntos({ ruta, setRutaSeleccionada, mapRef }) {
   const [puntos, setPuntos] = useState([])
 
   useEffect(() => {
@@ -12,18 +12,12 @@ function MenuPuntos({ ruta, setRutaSeleccionada, centrarEnPunto }) {
 
   return (
     <div className="menu-puntos">
-      <button
-        onClick={() => setRutaSeleccionada(null)}
-        className="volver-boton"
-      >
-        ← Volver
-      </button>
       <h3>{ruta.nombre}</h3>
       <ul>
         {puntos.map(punto => (
           <li
             key={punto.id}
-            onClick={() => centrarEnPunto(punto)}
+            onClick={() => mapRef.current.centrarYAbrir(punto)}
           >
             {punto.nombre}
           </li>
