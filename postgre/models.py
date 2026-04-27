@@ -1,7 +1,6 @@
-from sqlalchemy import Column, Integer, String, Float, Table, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Table, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from database import Base
-
 # Tabla intermedia ruta <-> punto
 ruta_punto = Table(
     "ruta_punto",
@@ -18,6 +17,9 @@ class Punto(Base):
     descripcion = Column(String, default="")
     latitud = Column(Float, nullable=False)
     longitud = Column(Float, nullable=False)
+
+    pago = Column(Boolean, default=False)
+    url = Column(String, nullable=True)
 
     rutas = relationship("Ruta", secondary=ruta_punto, back_populates="puntos")
 

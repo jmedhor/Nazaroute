@@ -30,5 +30,8 @@ def get_todos_puntos(db: Session):
                 "longitud": punto.longitud,
                 "ruta_id": ruta.id,
                 "ruta_nombre": ruta.nombre,
+
+                "pago": punto.pago,
+                "url": punto.url,
             })
     return resultado

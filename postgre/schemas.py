@@ -1,11 +1,14 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 class PuntoBase(BaseModel):
     nombre: str
     descripcion: str = ""
     latitud: float
     longitud: float
+
+    pago: bool = False
+    url: Optional[str] = None
 
 class PuntoOut(PuntoBase):
     id: int
