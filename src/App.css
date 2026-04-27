@@ -28,6 +28,41 @@ body{
   margin:0;
 }
 
+/* ----------- TITULO + SUBTITULO ----------- */
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Título principal */
+.titulo-app {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Subtítulo */
+.subtitulo-app {
+  font-size: 12px;
+  font-style: italic;
+  color: rgba(255,255,255,0.8);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+
+  /* efecto elegante */
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+/* pequeño efecto hover */
+.header-left:hover .subtitulo-app {
+  opacity: 1;
+}
+
 /* ---------- CONTENEDOR PRINCIPAL ---------- */
 
 .contenedor-principal{
@@ -49,7 +84,7 @@ body{
 /* ---------- MENU RUTAS ---------- */
 
 .menu-rutas{
-  width:240px;
+  width:200px;
   height:100%;
   background:white;
   border-radius:10px;
@@ -110,8 +145,8 @@ body{
 /* ---------- MENU PUNTOS ---------- */
 
 .menu-puntos{
-  width:240px;
-  height:100%;
+  width:200px;
+  height:93%;
   background:white;
   border-radius:10px;
   padding:15px;
@@ -241,7 +276,7 @@ body{
 /* --------------- PASOS --------------- */
 
 .panel-ruta {
-  width: 260px;
+  width: 210px;
   height: 100%;
   background: white;
   border-radius: 10px;
@@ -298,9 +333,9 @@ body{
   align-items: center;
   background: #7b1e1e;
   color: white;
-  padding: 10px 20px;
+  padding: 20px 20px;
   height: 60px;
-  position: relative; /* 👈 clave */
+  position: relative;
 }
 
 .header-right {
@@ -319,13 +354,14 @@ body{
 
 .main-layout {
   display: flex;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 100px);
 }
 
 /* PANEL DERECHO */
 
 .panel-derecha {
-  width: 320px;
+  width: 220px;
+  height: 93%;
   background: #ffffff;
   display: flex;
   flex-direction: column;
@@ -352,7 +388,6 @@ body{
 }
 
 .btn-start {
-  margin-top: auto;
   padding: 12px;
   background: #7BB357;
   color: white;
@@ -411,4 +446,74 @@ body{
 .lista-puntos li:hover {
   background: #e9f5f2;
   transform: translateX(3px);
+}
+
+/* ----------- TOGGLES MODERNOS ----------- */
+
+.selector-ruta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Grupo de botones */
+.toggle-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Botón base */
+.toggle {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(6px);
+}
+
+/* Hover */
+.toggle:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-1px);
+}
+
+/* Activo (modo seleccionado) */
+.toggle.active {
+  background: #ffffff;
+  color: #7b1e1e;
+  border-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+/* Variante "peligro" (pago) */
+.toggle.danger {
+  border-color: rgba(255,255,255,0.4);
+}
+
+.toggle.danger.active {
+  background: #e63946;
+  color: white;
+  border-color: #e63946;
+}
+
+/* Pequeño efecto al click */
+.toggle:active {
+  transform: scale(0.95);
+}
+
+
+/* ----------- FILA BOTONES SUPERIOR ----------- */
+
+.fila-botones {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  margin-bottom: 10px;
+  gap: 10px;
 }

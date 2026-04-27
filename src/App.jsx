@@ -34,41 +34,42 @@ function App() {
       {/* HEADER */}
       <header className="app-header">
         <div className="header-left">
-          <h1>NazaRoute</h1>
+          <h1 className="titulo-app">NazaRoute</h1>
+          <span className="subtitulo-app">
+            Rutas históricas por la ciudad de Granada
+          </span>
         </div>
 
         <div className="header-right">
+
           <div className="selector-ruta">
-            <label>
-              <input
-                type="radio"
-                value="optima"
-                checked={modoRuta === "optima"}
-                onChange={() => setModoRuta("optima")}
-              />
-              Óptima
-            </label>
 
+            {/* MODO RUTA */}
+            <div className="toggle-group">
+              <button
+                className={modoRuta === "optima" ? "toggle active" : "toggle"}
+                onClick={() => setModoRuta("optima")}
+              >
+                Ruta mas corta
+              </button>
 
+              <button
+                className={modoRuta === "historica" ? "toggle active" : "toggle"}
+                onClick={() => setModoRuta("historica")}
+              >
+                Ruta histórica (UGR)
+              </button>
+            </div>
 
-            <label>
-              <input
-                type="radio"
-                value="historica"
-                checked={modoRuta === "historica"}
-                onChange={() => setModoRuta("historica")}
-              />
-              Histórica
-            </label>
-
-            <label style={{ display: "block", marginTop: "10px" }}>
-              <input
-                type="checkbox"
-                checked={evitarPago}
-                onChange={(e) => setEvitarPago(e.target.checked)}
-              />
-              {" "}Evitar opciones de pago 💸
-            </label>
+            {/* EVITAR PAGO */}
+            <div className="toggle-group">
+              <button
+                className={evitarPago ? "toggle danger active" : "toggle danger"}
+                onClick={() => setEvitarPago(!evitarPago)}
+              >
+                Evitar lugares de pago
+              </button>
+            </div>
 
           </div>
         </div>
@@ -104,40 +105,30 @@ function App() {
           {/* CON RUTA */}
           {rutaSeleccionada && (
             <>
-              {/* BOTON VOLVER SIEMPRE ARRIBA */}
-              <button
-                className="btn-volver"
-                onClick={() => {
-                  setRutaSeleccionada(null)
-                  setModoNavegacion(false)
-                }}
-              >
-                ← Volver
-              </button>
+              {/* FILA SUPERIOR DE BOTONES */}
+              <div className="fila-botones">
 
-              {/* MODO PUNTOS */}
-              {!modoNavegacion && (
-                <>
-                  <MenuPuntos
-                    ruta={rutaSeleccionada}
-                    centrarEnPunto={centrarEnPunto}
-                    mapRef={mapRef}
+                <button
+                  className="btn-volver"
+                  onClick={() => {
+                    setRutaSeleccionada(null)
+                    setModoNavegacion(false)
+                  }}
+                >
+                  ← Volver
+                </button>
 
-                  />
-
+                {!modoNavegacion && (
                   <button
                     className="btn-start"
                     onClick={() => setModoNavegacion(true)}
                   >
                     🚀 Comenzar Ruta
                   </button>
-                </>
-              )}
+                )}
 
-              {/* MODO NAVEGACIÓN */}
               {modoNavegacion && (
                 <>
-                  <PanelRuta rutasSegmentos={rutasSegmentos} />
 
                   <button
                     className="btn-puntos"
@@ -145,6 +136,26 @@ function App() {
                   >
                     📍 Volver a lista de puntos
                   </button>
+                </>
+              )}
+
+              </div>
+
+              {/* MODO PUNTOS */}
+              {!modoNavegacion && (
+                <MenuPuntos
+                  ruta={rutaSeleccionada}
+                  centrarEnPunto={centrarEnPunto}
+                  mapRef={mapRef}
+                  evitarPago={evitarPago}
+                />
+              )}
+
+              {/* MODO NAVEGACIÓN */}
+              {modoNavegacion && (
+                <>
+                  <PanelRuta rutasSegmentos={rutasSegmentos} />
+
                 </>
               )}
             </>
