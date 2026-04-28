@@ -14,6 +14,8 @@ function App() {
   const [mostrarPuntos, setMostrarPuntos] = useState(false)
   const [modoNavegacion, setModoNavegacion] = useState(false)
   const [evitarPago, setEvitarPago] = useState(false)
+  const [mostrarPanel, setMostrarPanel] = useState(true)
+
   // función para centrar en un punto desde MenuPuntos
   const centrarEnPunto = (punto) => {
     if (!mapRef.current) return
@@ -73,11 +75,19 @@ function App() {
 
           </div>
         </div>
+
+      {/* BOTÓN OJO */}
+      <button
+        className="btn-ojo"
+        onClick={() => setMostrarPanel(!mostrarPanel)}
+      >
+        {mostrarPanel ? "👁️" : "🙈"}
+      </button>
+
       </header>
 
       {/* MAIN */}
-      <div className="main-layout">
-
+      <div className={mostrarPanel ? "main-layout" : "main-layout-full"}>
         {/* MAPA */}
         <div className="map-container">
           <Mapa
@@ -92,8 +102,8 @@ function App() {
         </div>
 
         {/* PANEL DERECHO ÚNICO */}
+      {mostrarPanel && (
         <div className="panel-derecha">
-
           {/* SIN RUTA */}
           {!rutaSeleccionada && (
             <MenuRutas
@@ -162,6 +172,7 @@ function App() {
           )}
 
         </div>
+        )}
 
       </div>
     </div>

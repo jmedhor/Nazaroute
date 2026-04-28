@@ -3,6 +3,8 @@ import { useEffect, useState, useRef } from 'react'
 import { obtenerRutaHistorica, obtenerRutaOptima } from '../../services/osrm.js'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import MarkerClusterGroup from 'react-leaflet-cluster'
+
 import PopupRuta from './Popup'
 import gpsRed from '../assets/gps_red.png'
 import gpsBlue from '../assets/gps_blue.png'
@@ -50,6 +52,14 @@ function MapController({ setMapRef }) {
   }, [map])
 
   return null
+}
+
+const createClusterCustomIcon = function (cluster) {
+  return L.divIcon({
+    html: `<div class="cluster-icon">${cluster.getChildCount()}</div>`,
+    className: 'custom-marker-cluster',
+    iconSize: L.point(40, 40, true),
+  })
 }
 
 
@@ -191,27 +201,61 @@ function Mapa({ rutaSeleccionada, mapRef, modoHistoriador, setModoHistoriador, m
         </Tooltip>
       </Marker>
 
-      {puntos
-        .filter(punto => !evitarPago || !punto.pago)
-        .map(punto => (
-        <Marker
-          key={`${punto.id}-${punto.ruta_id}`}
-          position={[punto.latitud, punto.longitud]}
-          icon={iconosRutas[punto.ruta_id] || iconosRutas[1]}
-          ref={(el) => {
-            if (el) markersRef.current[punto.id] = el
-          }}
+      {!rutaSeleccionada && (
+        <MarkerClusterGroup
+          chunkedLoading
+          maxClusterRadius={50}
+          showCoverageOnHover={false}
+          iconCreateFunction={createClusterCustomIcon}
         >
-          <Popup>
-            <PopupRuta
-              punto={punto}
-              ruta={{ nombre: punto.ruta_nombre }}
-              modoHistoriador={modoHistoriador}
-              setModoHistoriador={setModoHistoriador}
-            />
-          </Popup>
-        </Marker>
-      ))}
+          {puntos
+            .filter(punto => !evitarPago || !punto.pago)
+            .map(punto => (
+              <Marker
+                key={`${punto.id}-${punto.ruta_id}`}
+                position={[punto.latitud, punto.longitud]}
+                icon={iconosRutas[punto.ruta_id] || iconosRutas[1]}
+                ref={(el) => {
+                  if (el) markersRef.current[punto.id] = el
+                }}
+              >
+                <Popup>
+                  <PopupRuta
+                    punto={punto}
+                    ruta={{ nombre: punto.ruta_nombre }}
+                    modoHistoriador={modoHistoriador}
+                    setModoHistoriador={setModoHistoriador}
+                  />
+                </Popup>
+              </Marker>
+            ))}
+        </MarkerClusterGroup>
+      )}
+
+      {/* CUANDO HAY RUTA → SIN CLUSTER */}
+      {rutaSeleccionada && (
+        puntos
+          .filter(punto => !evitarPago || !punto.pago)
+          .map(punto => (
+            <Marker
+              key={`${punto.id}-${punto.ruta_id}`}
+              position={[punto.latitud, punto.longitud]}
+              icon={iconosRutas[punto.ruta_id] || iconosRutas[1]}
+              ref={(el) => {
+                if (el) markersRef.current[punto.id] = el
+              }}
+            >
+              <Popup>
+                <PopupRuta
+                  punto={punto}
+                  ruta={{ nombre: punto.ruta_nombre }}
+                  modoHistoriador={modoHistoriador}
+                  setModoHistoriador={setModoHistoriador}
+                />
+              </Popup>
+            </Marker>
+          ))
+      )}
 
       )}
 

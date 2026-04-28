@@ -465,7 +465,7 @@ body{
 
 /* Botón base */
 .toggle {
-  padding: 8px 16px;
+  padding: 8px 9px;
   border-radius: 20px;
   border: 2px solid transparent;
   background: rgba(255,255,255,0.15);
@@ -516,4 +516,68 @@ body{
   align-items: stretch;
   margin-bottom: 10px;
   gap: 10px;
+}
+
+
+/* ----------- BOTON OJO ----------- */
+
+.btn-ojo {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  background: rgba(255,255,255,0.15);
+  border: none;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+
+  font-size: 20px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  backdrop-filter: blur(6px);
+  transition: all 0.25s ease;
+}
+
+.btn-ojo:hover {
+  background: rgba(255,255,255,0.3);
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* ----------- MODO SIN PANEL ----------- */
+
+.main-layout-full {
+  display: flex;
+  height: calc(100vh - 100px);
+}
+
+.main-layout-full .map-container {
+  flex: 1;
+  width: 100%;
+}
+
+/* ----------- MARKERCLUSTER ---------- */
+
+.custom-marker-cluster {
+  background: transparent;
+}
+
+.cluster-icon {
+  background: #7b1e1e;
+  color: white;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border: 3px solid white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  font-size: 14px;
 }
